@@ -32,7 +32,7 @@ simple_ames <-
   recipe(Sale_Price ~ Neighborhood + Gr_Liv_Area + Year_Built + Bldg_Type,
          data = ames_train) %>%
   step_normalize(all_numeric_predictors()) %>% #subtracts mean, dividing by sd
-  step_other(Neighborhood, threshold = 0.05) %>%
+  step_other(Neighborhood, threshold = 0.05) %>% # Infrequent values of neighborhood are simply changed to "other" if they appear less than 5% of the time
   step_dummy(all_nominal_predictors()) 
 
 
@@ -53,10 +53,10 @@ feat_ames <-
   recipe(Sale_Price ~ .,
          data = ames_train) %>%
   step_other(Neighborhood, threshold = 0.05) %>% 
-  step_mutate(total_area = rowSums(across(all_of(area_cols)))) %>%
+  step_mutate(total_area = rowSums(across(all_of(area_cols)))) %>% # Ge the total area in the house
   step_dummy(all_nominal_predictors())  %>%
   step_select(-all_of(area_cols)) %>%
-  step_nzv(all_predictors())
+  step_nzv(all_predictors()) # Remove variable hat are highly sparse/unbalanced
 
 
 feat_ames
